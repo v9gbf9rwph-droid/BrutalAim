@@ -1,0 +1,20 @@
+name: Build Tweak
+on: [push]
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Theos
+        run: |
+          git clone --recursive https://github.com/theos/theos.git $HOME/theos
+          echo "THEOS=$HOME/theos" >> $GITHUB_ENV
+      - name: Install Dependencies
+        run: brew install ldid
+      - name: Build
+        run: make package
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: BrutalAim-Dylib
+          path: .theos/obj/debug/*.dylib
